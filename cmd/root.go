@@ -30,4 +30,13 @@ func init() {
 	// For example, setting up flags or configuration
 	rootCmd.Flags().BoolP("version", "v", false, "Display the version of Password Zen")
 	rootCmd.Flags().BoolP("help", "h", true, "Display help for Password Zen")
+	rootCmd.SetHelpCommand(&cobra.Command{
+		Use:   "help",
+		Short: "Display help for Password Zen",
+		Long:  "Display help for Password Zen. Use 'password-zen <command> --help' for command-specific help.",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	})
+	rootCmd.SetVersionTemplate("Password Zen v1.0.0\n")
 }
