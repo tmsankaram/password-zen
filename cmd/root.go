@@ -7,15 +7,23 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/tmsankaram/password-zen/internal/version"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "password-zen",
-	Short: "A password generation tool",
-	Long: `Password Zen is a command-line tool for generating secure passwords.
-It allows users to create strong, random passwords with various options for customization.
-Use 'password-zen --help' or 'password-zen <command> --help' for more details on usage and available commands.`,
-	// Run:
+	Short: "A modern CLI tool for secure password generation and analysis",
+	Long: `Password Zen is a command-line tool for generating secure passwords and analyzing password strength.
+
+Features:
+• Generate cryptographically secure passwords with customizable options
+• Analyze password strength against security criteria
+• Batch analysis of password files
+• Colorful output with animations (can be disabled)
+• Cross-platform support (Windows, Linux, macOS)
+
+Use 'password-zen <command> --help' for detailed command information.`,
+	Version: version.Short(),
 }
 
 func Execute() {
@@ -26,17 +34,9 @@ func Execute() {
 }
 
 func init() {
-	// Add any initialization code here if needed
-	// For example, setting up flags or configuration
-	rootCmd.Flags().BoolP("version", "v", false, "Display the version of Password Zen")
-	rootCmd.Flags().BoolP("help", "h", true, "Display help for Password Zen")
-	rootCmd.SetHelpCommand(&cobra.Command{
-		Use:   "help",
-		Short: "Display help for Password Zen",
-		Long:  "Display help for Password Zen. Use 'password-zen <command> --help' for command-specific help.",
-		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
-		},
-	})
-	rootCmd.SetVersionTemplate("Password Zen v1.0.0\n")
+	// Version flag
+	rootCmd.Flags().BoolP("version", "v", false, "Show version information")
+
+	// Set custom version template
+	rootCmd.SetVersionTemplate(version.Info() + "\n")
 }
