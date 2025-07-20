@@ -1,0 +1,114 @@
+name: password-zen
+description: |
+  A CLI tool for generating, validating, and analyzing passwords.
+  It provides various options for customization and security analysis.
+version: 1.0.0
+commands:
+  - name: generate
+    description: Generate a secure password.
+    flags:
+      - name: length
+        description: Length of the password to generate.
+        type: int
+        default: 12
+      - name: include-symbols
+        description: Include special characters in the password.
+        type: bool
+        default: true
+      - name: exclude-ambiguous
+        description: Exclude ambiguous characters (e.g., 'l', '1', 'I', 'O', '0').
+        type: bool
+        default: true
+      - name: charset
+        description: Custom character set to use for password generation.
+        type: string
+        default: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    examples:
+      - command: password-zen generate --length 16 --include-symbols
+        description: Generate a 16-character password with symbols.
+      - command: password-zen generate --length 12 --exclude-ambiguous
+        description: Generate a 12-character password excluding ambiguous characters.
+  - name: validate
+    description: Validate a given password against security criteria.
+    flags:
+      - name: password
+        description: The password to validate.
+        type: string
+        required: true
+    examples:
+      - command: password-zen validate "mypassword123"
+        description: Validate the provided password.
+  - name: analyze
+    description: Analyze a file containing passwords for security issues.
+    flags:
+      - name: file
+        description: Path to the file containing passwords to analyze.
+        type: string
+        required: true
+    examples:
+      - command: password-zen analyze --file passwords.txt
+        description: Analyze the passwords in the specified file for common issues.
+  - name: help
+    description: Display help information for the CLI tool.
+    flags:
+      - name: command
+        description: The specific command to get help for.
+        type: string
+    examples:
+      - command: password-zen --help
+        description: Display help information for the CLI tool.
+      - command: password-zen generate --help
+        description: Display help information for the generate command.
+  - name: version
+    description: Display the version of the CLI tool.
+    examples:
+      - command: password-zen --version
+        description: Display the current version of the password-zen tool.
+config:
+  - name: config
+    description: Path to the configuration file for the CLI tool.
+    type: string
+    default: "~/.password-zen/config.yaml"
+  - name: env
+    description: Environment variables to override configuration settings.
+    type: map
+    default: {}
+defaults:
+  - name: length
+    description: Default length for generated passwords.
+    type: int
+    value: 12
+  - name: include-symbols
+    description: Default to include special characters in generated passwords.
+    type: bool
+    value: true
+  - name: exclude-ambiguous
+    description: Default to exclude ambiguous characters in generated passwords.
+    type: bool
+    value: true
+  - name: charset
+    description: Default character set for password generation.
+    type: string
+    value: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+errorHandling:
+  - name: user-friendly
+    description: Provide clear and actionable error messages to users.
+    type: bool
+    default: true
+  - name: logging
+    description: Log errors for debugging purposes.
+    type: bool
+    default: true
+testing:
+  - name: unit
+    description: Unit tests for individual components of the CLI tool.
+    type: bool
+    default: true
+  - name: integration
+    description: Integration tests for command interactions and configurations.
+    type: bool
+    default: true
+  - name: e2e
+    description: End-to-end tests for the entire CLI tool workflow.
+    type: bool
+    default: true
