@@ -8,12 +8,12 @@ A modern, secure CLI tool for password generation and analysis.
 
 ## Features ✨
 
-🔒 **Secure Generation**: Cryptographically secure random password generation
-📊 **Password Analysis**: Analyze password strength with detailed feedback
-📁 **Batch Processing**: Analyze multiple passwords from files
-🎨 **Beautiful Output**: Colorful terminal output with animations
-⚙️ **Customizable**: Extensive configuration options
-🖥️ **Cross-Platform**: Works on Windows, Linux, and macOS
+- 🔒 **Secure Generation**: Cryptographically secure random password generation
+- 📊 **Password Analysis**: Analyze password strength with detailed feedback
+- 📁 **Batch Processing**: Analyze multiple passwords from files
+- 🎨 **Beautiful Output**: Colorful terminal output with animations
+- ⚙️ **Customizable**: Extensive configuration options
+- 🖥️ **Cross-Platform**: Works on Windows, Linux, and macOS
 
 ## Quick Start 🚀
 
@@ -99,29 +99,6 @@ sudo mv password-zen /usr/local/bin/
 
 # Verify installation
 password-zen --version
-```
-
-### Package Managers
-
-**Homebrew (macOS/Linux):**
-
-```bash
-# Coming soon - will be available via:
-# brew install password-zen
-```
-
-**Chocolatey (Windows):**
-
-```powershell
-# Coming soon - will be available via:
-# choco install password-zen
-```
-
-**Snap (Linux):**
-
-```bash
-# Coming soon - will be available via:
-# sudo snap install password-zen
 ```
 
 ### Build from Source
