@@ -18,13 +18,7 @@ var generateCmd = &cobra.Command{
 	Short: "Generate a secure password",
 	Long: `Generate a secure password with customizable options.
 You can specify the length, character sets, and other parameters to create a password that meets your security needs.
-Examples:
-- Generate a 12-character password with symbols:
-$ password-zen generate --length 12 --include-symbols
-- Generate a 16-character password excluding ambiguous characters:
-$ password-zen generate --length 16 --exclude-ambiguous
-- Generate a password using a custom character set:
-$ password-zen generate --length 12 --charset "ABC123!@#"`,
+For more details, use 'password-zen generate --help'.`,
 	Run: generatePassword,
 }
 
@@ -48,6 +42,9 @@ func generatePassword(cmd *cobra.Command, args []string) {
 	// Validate input
 	if length <= 0 {
 		cmd.PrintErr("Error: Password length must be greater than 0\n")
+		return
+	} else if length > 128 {
+		cmd.PrintErr("Error: Password length must not exceed 128 characters\n")
 		return
 	}
 

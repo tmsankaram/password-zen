@@ -13,8 +13,8 @@ var rootCmd = &cobra.Command{
 	Use:   "password-zen",
 	Short: "A password generation tool",
 	Long: `Password Zen is a command-line tool for generating secure passwords.
-	It allows users to create strong, random passwords with various options for customization.
-	Use 'password-zen --help' or 'password-zen <command> --help' for more details on usage and available commands.`,
+It allows users to create strong, random passwords with various options for customization.
+Use 'password-zen --help' or 'password-zen <command> --help' for more details on usage and available commands.`,
 	// Run:
 }
 
