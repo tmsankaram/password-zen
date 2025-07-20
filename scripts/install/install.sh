@@ -92,23 +92,30 @@ download_binary() {
     log_info "Downloading $BINARY_NAME from $BINARY_URL"
 
     if command -v curl >/dev/null 2>&1; then
-        curl -L -o "$TEMP_FILE" "$BINARY_URL"
+        if ! curl -L -o "$TEMP_FILE" "$BINARY_URL"; then
+            log_error "Failed to download binary"
+            exit 1
+        fi
     elif command -v wget >/dev/null 2>&1; then
-        wget -O "$TEMP_FILE" "$BINARY_URL"
+        if ! wget -O "$TEMP_FILE" "$BINARY_URL"; then
+            log_error "Failed to download binary"
+            exit 1
+        fi
     else
         log_error "Neither curl nor wget is available. Please install one of them."
         exit 1
     fi
 
     if [ ! -f "$TEMP_FILE" ]; then
-        log_error "Failed to download binary"
+        log_error "Failed to download binary - file not found"
         exit 1
     fi
 
     # Make binary executable
     chmod +x "$TEMP_FILE"
 
-    echo "$TEMP_FILE"
+    # Return the temp file path (without any color codes)
+    printf "%s" "$TEMP_FILE"
 }
 
 # Install binary
