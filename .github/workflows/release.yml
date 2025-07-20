@@ -52,13 +52,12 @@ jobs:
         cd ..
 
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v2
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
         tag_name: ${{ steps.version.outputs.version }}
-        release_name: Password Zen ${{ steps.version.outputs.version }}
+        name: Password Zen ${{ steps.version.outputs.version }}
         body: |
           ## Password Zen ${{ steps.version.outputs.version }}
 
@@ -91,19 +90,7 @@ jobs:
 
           ### 🔍 Verification
           Download `checksums.txt` to verify binary integrity with `sha256sum -c checksums.txt`
+        files: |
+          dist/*
         draft: false
         prerelease: false
-
-    - name: Upload Release Assets
-      run: |
-        for file in dist/*; do
-          if [ -f "$file" ]; then
-            echo "Uploading $file"
-            curl \
-              -X POST \
-              -H "Authorization: token ${{ secrets.TOKEN }}" \
-              -H "Content-Type: application/octet-stream" \
-              --data-binary @"$file" \
-              "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=$(basename $file)"
-          fi
-        done
