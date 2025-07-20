@@ -1,1 +1,32 @@
+# Binary
 password-zen
+password-zen.exe
+
+# Build artifacts
+dist/
+build/
+
+# Testing
+coverage.out
+*.test
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Package manager files
+node_modules/
+vendor/

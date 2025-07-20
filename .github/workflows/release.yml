@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Get version
+      id: version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "version=v1.0.0" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build binaries
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        BUILD_DATE=$(date -u '+%Y-%m-%d_%H:%M:%S')
+        GIT_COMMIT=${GITHUB_SHA::8}
+        BUILD_FLAGS="-ldflags=-w -s -X github.com/tmsankaram/password-zen/internal/version.Version=${VERSION} -X github.com/tmsankaram/password-zen/internal/version.BuildDate=${BUILD_DATE} -X github.com/tmsankaram/password-zen/internal/version.GitCommit=${GIT_COMMIT}"
+
+        mkdir -p dist
+
+        # Build for different platforms
+        GOOS=windows GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-windows-amd64.exe" .
+        GOOS=linux GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-linux-amd64" .
+        GOOS=linux GOARCH=arm64 go build ${BUILD_FLAGS} -o "dist/password-zen-linux-arm64" .
+        GOOS=darwin GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-darwin-amd64" .
+        GOOS=darwin GOARCH=arm64 go build ${BUILD_FLAGS} -o "dist/password-zen-darwin-arm64" .
+
+        # Generate checksums
+        cd dist
+        sha256sum * > checksums.txt
+        cd ..
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        release_name: Password Zen ${{ steps.version.outputs.version }}
+        body: |
+          ## Password Zen ${{ steps.version.outputs.version }}
+
+          ### 🎉 What's New
+          - Password generation with cryptographic security
+          - Password strength analysis with colorful output
+          - Batch processing for multiple passwords
+          - Cross-platform support (Windows, Linux, macOS)
+
+          ### 📦 Installation
+
+          **Windows:**
+          ```powershell
+          curl -L -o password-zen.exe https://github.com/tmsankaram/password-zen/releases/download/${{ steps.version.outputs.version }}/password-zen-windows-amd64.exe
+          ```
+
+          **Linux:**
+          ```bash
+          curl -L -o password-zen https://github.com/tmsankaram/password-zen/releases/download/${{ steps.version.outputs.version }}/password-zen-linux-amd64
+          chmod +x password-zen
+          sudo mv password-zen /usr/local/bin/
+          ```
+
+          **macOS:**
+          ```bash
+          curl -L -o password-zen https://github.com/tmsankaram/password-zen/releases/download/${{ steps.version.outputs.version }}/password-zen-darwin-amd64
+          chmod +x password-zen
+          sudo mv password-zen /usr/local/bin/
+          ```
+
+          ### 🔍 Verification
+          Download `checksums.txt` to verify binary integrity with `sha256sum -c checksums.txt`
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Assets
+      run: |
+        for file in dist/*; do
+          if [ -f "$file" ]; then
+            echo "Uploading $file"
+            curl \
+              -X POST \
+              -H "Authorization: token ${{ secrets.TOKEN }}" \
+              -H "Content-Type: application/octet-stream" \
+              --data-binary @"$file" \
+              "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ steps.create_release.outputs.id }}/assets?name=$(basename $file)"
+          fi
+        done

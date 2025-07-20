@@ -5,7 +5,7 @@ import (
 	"runtime"
 )
 
-const (
+var (
 	// Version is the current version of password-zen
 	Version = "1.0.0"
 	// BuildDate is the date when the binary was built
