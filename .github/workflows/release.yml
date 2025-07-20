@@ -35,16 +35,16 @@ jobs:
       run: |
         BUILD_DATE=$(date -u '+%Y-%m-%d_%H:%M:%S')
         GIT_COMMIT=${GITHUB_SHA::8}
-        BUILD_FLAGS="-ldflags=-w -s -X github.com/tmsankaram/password-zen/internal/version.Version=${VERSION} -X github.com/tmsankaram/password-zen/internal/version.BuildDate=${BUILD_DATE} -X github.com/tmsankaram/password-zen/internal/version.GitCommit=${GIT_COMMIT}"
+        LDFLAGS="-w -s -X github.com/tmsankaram/password-zen/internal/version.Version=${VERSION} -X github.com/tmsankaram/password-zen/internal/version.BuildDate=${BUILD_DATE} -X github.com/tmsankaram/password-zen/internal/version.GitCommit=${GIT_COMMIT}"
 
         mkdir -p dist
 
         # Build for different platforms
-        GOOS=windows GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-windows-amd64.exe" .
-        GOOS=linux GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-linux-amd64" .
-        GOOS=linux GOARCH=arm64 go build ${BUILD_FLAGS} -o "dist/password-zen-linux-arm64" .
-        GOOS=darwin GOARCH=amd64 go build ${BUILD_FLAGS} -o "dist/password-zen-darwin-amd64" .
-        GOOS=darwin GOARCH=arm64 go build ${BUILD_FLAGS} -o "dist/password-zen-darwin-arm64" .
+        GOOS=windows GOARCH=amd64 go build -ldflags="${LDFLAGS}" -o "dist/password-zen-windows-amd64.exe" .
+        GOOS=linux GOARCH=amd64 go build -ldflags="${LDFLAGS}" -o "dist/password-zen-linux-amd64" .
+        GOOS=linux GOARCH=arm64 go build -ldflags="${LDFLAGS}" -o "dist/password-zen-linux-arm64" .
+        GOOS=darwin GOARCH=amd64 go build -ldflags="${LDFLAGS}" -o "dist/password-zen-darwin-amd64" .
+        GOOS=darwin GOARCH=arm64 go build -ldflags="${LDFLAGS}" -o "dist/password-zen-darwin-arm64" .
 
         # Generate checksums
         cd dist
